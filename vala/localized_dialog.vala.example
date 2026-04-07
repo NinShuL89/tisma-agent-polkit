@@ -1,0 +1,160 @@
+/* 
+ * Ejemplo: Cómo integrar traducciones en Vala
+ * 
+ * Este archivo muestra patrones para usar traducciones
+ * desde el backend Rust en la interfaz Vala/GTK4
+ */
+
+// ============================================================
+// Opción 1: Pasar strings traducidos desde Rust
+// ============================================================
+
+/*
+// En Rust (src/main.rs o src/ui/mod.rs):
+use tisma_agent_polkit::i18n::I18n;
+
+pub async fn show_auth_dialog(i18n: &I18n) -> Result<()> {
+    let title = i18n.translate("auth_dialog.title");
+    let password_label = i18n.translate("auth_dialog.password_placeholder");
+    
+    // Pasar a la función de la UI de Vala
+    let dialog = PolkitAuthDialog::new(
+        &title,
+        &password_label,
+    );
+    
+    dialog.run().await?;
+    Ok(())
+}
+*/
+
+// ============================================================
+// Opción 2: Vala con soporte dbgettext (futuro)
+// ============================================================
+
+/*
+using Gtk;
+
+public class TranslatedWindow : Gtk.ApplicationWindow {
+    public TranslatedWindow(Gtk.Application app) {
+        Object(application: app);
+        
+        var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
+        
+        // Usar gettext para traducciones en Vala
+        var label = new Gtk.Label(_("Se requiere autenticación"));
+        var button = new Gtk.Button.with_label(_("Autenticar"));
+        
+        box.append(label);
+        box.append(button);
+        this.set_child(box);
+    }
+}
+*/
+
+// ============================================================
+// Ejemplo Real: dialogo con traducciones
+// ============================================================
+
+using Gtk;
+using Gio;
+
+public class LocalizedPolkitDialog : Gtk.ApplicationWindow {
+    private Gtk.Label title_label;
+    private Gtk.Label message_label;
+    private Gtk.Button auth_button;
+    private Gtk.Button cancel_button;
+
+    // Recibir strings ya traducidos desde Rust
+    public LocalizedPolkitDialog(
+        Gtk.Application app,
+        string dialog_title,
+        string dialog_message,
+        string password_label,
+        string auth_button_label,
+        string cancel_button_label
+    ) {
+        Object(application: app, type: Gtk.WindowType.TOPLEVEL);
+        
+        this.set_title(dialog_title);
+        this.set_default_size(400, 250);
+        this.set_resizable(false);
+        this.set_keep_above(true);
+        
+        build_ui(
+            dialog_title,
+            dialog_message,
+            password_label,
+            auth_button_label,
+            cancel_button_label
+        );
+    }
+
+    private void build_ui(
+        string dialog_title,
+        string dialog_message,
+        string password_label,
+        string auth_button_label,
+        string cancel_button_label
+    ) {
+        var main_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 12);
+        main_box.margin = 20;
+        
+        // Título
+        this.title_label = new Gtk.Label(dialog_title);
+        var font = Pango.FontDescription.from_string("bold 14");
+        this.title_label.override_font(font);
+        main_box.append(this.title_label);
+        
+        // Mensaje
+        this.message_label = new Gtk.Label(dialog_message);
+        this.message_label.set_wrap(true);
+        main_box.append(this.message_label);
+        
+        // Separador
+        main_box.append(new Gtk.Separator(Gtk.Orientation.HORIZONTAL));
+        
+        // Campo de contraseña
+        var password_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
+        var label = new Gtk.Label(password_label);
+        var password_entry = new Gtk.Entry();
+        password_entry.set_visibility(false);
+        
+        password_box.append(label);
+        password_box.append(password_entry);
+        main_box.append(password_box);
+        
+        // Botones
+        var button_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
+        button_box.set_halign(Gtk.Align.END);
+        
+        this.cancel_button = new Gtk.Button.with_label(cancel_button_label);
+        this.auth_button = new Gtk.Button.with_label(auth_button_label);
+        this.auth_button.add_css_class("suggested-action");
+        
+        button_box.append(this.cancel_button);
+        button_box.append(this.auth_button);
+        main_box.append(button_box);
+        
+        this.set_child(main_box);
+    }
+}
+
+/*
+// Uso desde código Rust:
+
+use tisma_agent_polkit::i18n::I18n;
+
+pub fn show_localized_auth_dialog(i18n: &I18n) {
+    let dialog = LocalizedPolkitDialog::new(
+        app,
+        &i18n.translate("auth_dialog.title"),
+        &i18n.translate("auth_dialog.message_label"),
+        &i18n.translate("auth_dialog.password_placeholder"),
+        &i18n.translate("auth_dialog.authenticate_button"),
+        &i18n.translate("auth_dialog.cancel_button"),
+    );
+    
+    dialog.show();
+}
+*/

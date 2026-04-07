@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<node name="/org/tissma/PolkitAgent" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+  <interface name="org.freedesktop.PolicyKit1.AuthenticationAgent">
+    <doc:doc>
+      <doc:description>
+        Interfaz del agente de autenticación polkit para Tisma
+      </doc:description>
+    </doc:doc>
+
+    <method name="BeginAuthentication">
+      <arg type="s" name="action_id" direction="in"/>
+      <arg type="s" name="message" direction="in"/>
+      <arg type="s" name="icon_name" direction="in"/>
+      <arg type="s" name="cookie" direction="in"/>
+      <arg type="ao" name="identities" direction="in"/>
+    </method>
+
+    <method name="CancelAuthentication">
+      <arg type="s" name="cookie" direction="in"/>
+    </method>
+  </interface>
+</node>

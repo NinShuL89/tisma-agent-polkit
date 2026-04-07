@@ -1,0 +1,12 @@
+target/
+Cargo.lock
+*.swp
+*.swo
+*~
+.DS_Store
+*.vala~
+vala_tmp/
+*.c
+*.h
+.vscode/
+.idea/

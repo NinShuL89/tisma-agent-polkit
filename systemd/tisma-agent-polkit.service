@@ -1,0 +1,13 @@
+[Unit]
+Description=Tisma Polkit Authentication Agent
+After=dbus.service
+
+[Service]
+Type=dbus
+BusName=org.tisma.PolkitAgent
+ExecStart=/usr/local/bin/tisma-agent-polkit
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target

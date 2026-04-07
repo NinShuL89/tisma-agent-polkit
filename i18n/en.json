@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "Tisma Polkit Agent",
+    "description": "PolicyKit authentication agent for Arch Linux"
+  },
+  "auth_dialog": {
+    "title": "Authentication Required",
+    "action_label": "Action",
+    "message_label": "Please enter your password to continue",
+    "password_placeholder": "Password",
+    "username_label": "Username",
+    "remember_password": "Remember password for this session",
+    "authenticate_button": "Authenticate",
+    "cancel_button": "Cancel"
+  },
+  "errors": {
+    "auth_failed": "Authentication failed",
+    "invalid_password": "Invalid password",
+    "timeout": "Authentication timeout",
+    "dbus_error": "D-Bus connection error",
+    "permission_denied": "Permission denied"
+  },
+  "messages": {
+    "starting": "Starting Tisma Polkit Agent...",
+    "registered": "Agent registered with PolicyKit",
+    "waiting_for_auth": "Waiting for authentication request",
+    "auth_success": "Authentication successful",
+    "auth_cancelled": "Authentication cancelled by user",
+    "closing": "Closing agent"
+  }
+}

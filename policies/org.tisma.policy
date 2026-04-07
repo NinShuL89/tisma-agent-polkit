@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+
+<policyconfig>
+  <vendor>Tisma</vendor>
+  <vendor_url>https://tisma.example.com</vendor_url>
+
+  <action id="org.freedesktop.policykit.exec">
+    <description>Ejecutar comandos privilegiados</description>
+    <message>Se requiere autenticación para ejecutar comandos con privilegios</message>
+    <message xml:lang="es">Se requiere autenticación para ejecutar comandos con privilegios</message>
+    <icon_name>dialog-password</icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>auth_self_keep</allow_active>
+    </defaults>
+  </action>
+
+</policyconfig>
