@@ -106,10 +106,21 @@ impl I18n {
 
     /// Cargar archivo de traducción
     fn load_translation_file(lang: Language) -> Result<Value, Box<dyn std::error::Error>> {
+        // Intentar cargar desde el sistema de archivos primero (modo desarrollo)
         let filename = format!("i18n/{}.json", lang.code());
-        let content = std::fs::read_to_string(&filename)?;
-        let json = serde_json::from_str(&content)?;
-        Ok(json)
+        
+        if let Ok(content) = std::fs::read_to_string(&filename) {
+            return Ok(serde_json::from_str(&content)?);
+        }
+        
+        // Fallback: retornar JSON vacío (las claves de idioma deberían ser embebidas)
+        // En producción, aquí iría include_str!() para embeber las traducciones
+        log::warn!("Archivo de traducción {} no encontrado. Usando fallback.", filename);
+        
+        Ok(json!({
+            "messages": {},
+            "errors": {}
+        }))
     }
 
     /// Cambiar idioma

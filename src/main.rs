@@ -15,12 +15,24 @@ async fn main() -> anyhow::Result<()> {
     log::info!("{}", i18n.translate("messages.starting"));
 
     // Crear el servicio polkit
-    let polkit_service = polkit::PolkitAgent::new().await?;
-
-    // Iniciar la aplicación GTK con Vala UI
-    if let Err(e) = ui::start_gtk_app(polkit_service).await {
-        log::error!("{}", i18n.translate("errors.dbus_error"));
-        process::exit(1);
+    match polkit::PolkitAgent::new().await {
+        Ok(polkit_service) => {
+            log::info!("Agente PolicyKit creado exitosamente");
+            
+            // Iniciar la aplicación GTK con Vala UI
+            if let Err(e) = ui::start_gtk_app(polkit_service).await {
+                log::error!("Error en GTK: {}", e);
+                log::error!("{}", i18n.translate("errors.dbus_error"));
+                eprintln!("Error: {}", e);
+                process::exit(1);
+            }
+        }
+        Err(e) => {
+            log::error!("No se pudo crear el agente PolicyKit: {}", e);
+            log::error!("{}", i18n.translate("errors.dbus_error"));
+            eprintln!("Error fatal: {}", e);
+            process::exit(1);
+        }
     }
 
     Ok(())
