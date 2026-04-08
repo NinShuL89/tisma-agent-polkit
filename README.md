@@ -54,9 +54,49 @@ make i18n-new LANG_CODE=it LANG_NAME='Italian'
 
 ## Instalación
 
-### Desde el repositorio
+### Instalación Automática (Recomendado) ⚡
+
 ```bash
-make install
+# Clona el repositorio
+git clone https://github.com/tisma/tisma-agent-polkit.git
+cd tisma-agent-polkit
+
+# Ejecuta el script de instalación
+chmod +x install.sh
+./install.sh
+```
+
+El script detecta tu distribución Linux e instala automáticamente:
+- ✅ Rust y Cargo
+- ✅ GTK4 y development files
+- ✅ Vala compiler
+- ✅ D-Bus libraries
+- ✅ pkg-config y GLib
+- ✅ Compila el proyecto
+- ✅ Instala el binario
+- ✅ Habilita el servicio systemd
+
+**Soporta:** Arch Linux, Debian/Ubuntu, Fedora/RHEL
+
+Ver [INSTALL.md](INSTALL.md) para instrucciones detalladas y instalación manual.
+
+### Instalación Manual (Alternativa)
+
+```bash
+# Arch Linux
+sudo pacman -S base-devel rustup cargo gtk4 vala libadwaita dbus pkg-config glib2
+cargo build --release
+sudo make install
+
+# Debian/Ubuntu
+sudo apt-get install -y build-essential rustup cargo libgtk-4-dev valac dbus libdbus-1-dev pkg-config libglib2.0-dev
+cargo build --release
+sudo make install
+
+# Fedora
+sudo dnf install -y @development-tools rustup cargo gtk4-devel vala dbus-devel pkg-config glib2-devel
+cargo build --release
+sudo make install
 ```
 
 ### Habilitar como servicio systemd
